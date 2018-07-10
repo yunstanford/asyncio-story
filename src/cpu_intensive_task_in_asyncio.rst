@@ -60,7 +60,7 @@ Running this snippet of code,
     2018-07-09 20:56:44,365 Finished io bound task...
     2018-07-09 20:56:50,368 Finished io bound task...
 
-We can see, `asyncio.gather` only started one io-bound task and one cpu intensive task,
+We can see, ``asyncio.gather`` only started one io-bound task and one cpu intensive task,
 it hasn't started all tasks, because the cpu intensive one has blocked event loop.
 The other io-bound task has been started after the cpu intensive one finished.
 
