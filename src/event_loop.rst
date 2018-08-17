@@ -83,6 +83,36 @@ In `python 2.5`, `PEP342 <https://www.python.org/dev/peps/pep-0342/>`_ introduce
 a loop and tasks
 ----------------
 
+What do we actually do when defining ``async def`` function in ``> Python 3.5`` ? Let's see,
+
+.. code-block:: python
+
+    async def hello_world():
+        print("hey, hello world!")
+
+    # create coroutine
+    coro = hello_world()
+
+    >>> type(coro)
+    <class 'coroutine'>
+    >>> type(coro.send)
+    <class 'builtin_function_or_method'>
+    >>> type(coro.throw)
+    <class 'builtin_function_or_method'>
+
+Note that the code above never printed our "hey, hello world!" message. That's because nothing happened, we never actually executed statements inside the coroutine function, we simply created the coroutine object.
+
+
+But, how can we execute the coroutine ?
+
+.. code-block:: python
+
+    >>> coro.send(None)
+    hey, hello world!
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    StopIteration
+
 
 ------------
 Handling I/O
