@@ -6,7 +6,8 @@ a simple event loop
 How to implement an event loop ?
 
 - coroutine/generator
-- a loop and tasks
+- asyncio task
+- event loop
 - I/O
 - sleep/timers
 
@@ -79,9 +80,9 @@ In `python 2.5`, `PEP342 <https://www.python.org/dev/peps/pep-0342/>`_ introduce
     >>> c.send(10)
     no!
 
-----------------
-a loop and tasks
-----------------
+------------
+asyncio task
+------------
 
 What do we actually do when defining ``async def`` function in ``> Python 3.5`` ? Let's see,
 
@@ -103,7 +104,7 @@ What do we actually do when defining ``async def`` function in ``> Python 3.5`` 
 Note that the code above never printed our "hey, hello world!" message. That's because nothing happened, we never actually executed statements inside the coroutine function, we simply created the coroutine object.
 
 
-But, how can we execute the coroutine ?
+But, how can we execute the coroutine ? We can schedule it by calling ``.send(None)``.
 
 .. code-block:: python
 
@@ -112,6 +113,40 @@ But, how can we execute the coroutine ?
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
     StopIteration
+
+
+As we can see, a couroutine object's ``.send(None)`` method raises ``StopIteration``. We can try schedule the coroutine and catch
+``StopIteration``.
+
+.. code-block:: python
+
+    >>> try:
+    >>>     coro.send(None)
+    >>> except StopIteration:
+    >>>     pass
+    hey, hello world!
+
+
+We've seen how task runs, but what happens if task raises ``Exception`` ?
+
+.. code-block:: python
+
+    async def hello_world():
+        raise ValueError("hey, hello world!")
+
+    # create coroutine
+    coro = hello_world()
+
+    >>> try:
+    >>>     coro.send(None)
+    >>> except Exception as e:
+    >>>     print("Catch coroutine's exception {}".format(str(e)))
+
+
+
+----------
+event loop
+----------
 
 
 ------------
