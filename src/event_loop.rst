@@ -183,7 +183,7 @@ a coroutine could yield control beforehand. WE NEED A LOOP.
     Exit the Loop..
 
 
-Does it look familar ?
+Does it look familar ? Yep! You guessed it, it's basically ``loop.run_until_complete``.
 
 .. code-block:: python
 
