@@ -143,10 +143,92 @@ We've seen how task runs, but what happens if task raises ``Exception`` ?
     >>>     print("Catch coroutine's exception {}".format(str(e)))
 
 
+Next, you may wonder how ``.throw()`` come into place ?
+
 
 ----------
-event loop
+Event Loop
 ----------
+
+In our previous discussion, we know that ``.send(None)`` could resume coroutine, but in reality, we may not know how many times that
+a coroutine could yield control beforehand. WE NEED A LOOP.
+
+
+.. code-block:: python
+
+    async def say_hello():
+        print("hey, hello world!")
+
+    async def hello_world():
+        print("Resume coroutine.")
+        for i in range(3):
+            await say_hello()
+        print("Finished coroutine.")
+
+
+    # create coroutine
+    coro = hello_world()
+
+    >>> try:
+    >>>     while 1:
+    >>>         coro.send(None)
+    >>> except StopIteration:
+    >>>     print("Exit the Loop..")
+
+    Resume coroutine.
+    hey, hello world!
+    hey, hello world!
+    hey, hello world!
+    Finished coroutine.
+    Exit the Loop..
+
+
+Does it look familar ?
+
+.. code-block:: python
+
+    async def say_hello():
+        print("hey, hello world!")
+
+    async def hello_world():
+        print("Resume coroutine.")
+        for i in range(3):
+            await say_hello()
+        print("Finished coroutine.")
+
+    class MyLoop:
+
+        def run_until_complete(self, task):
+
+            try:
+                while 1:
+                    task.send(None)
+            except StopIteration:
+                pass
+
+    my_loop = MyLoop()
+    task = hello_world()
+    my_loop.run_until_complete()
+
+    import asyncio
+    loop = asyncio.get_event_loop()
+    task = hello_world()
+    loop.run_until_complete(task)
+
+    # console logs
+    $ python3 examples/simple_event_loop.py
+    Resume coroutine.
+    hey, hello world!
+    hey, hello world!
+    hey, hello world!
+    Finished coroutine.
+    Resume coroutine.
+    hey, hello world!
+    hey, hello world!
+    hey, hello world!
+    Finished coroutine.
+
+Oh, we've just implemented a simple event loop!
 
 
 ------------
