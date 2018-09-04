@@ -1,9 +1,7 @@
 a simple event loop
 ===================
 
-a simple event loop
-
-How to implement an event loop ?
+You might ask yourself while using asyncio, what does asyncio do under the hood, and how could I implement an event loop ? Consider,
 
 - coroutine/generator
 - asyncio task
@@ -229,6 +227,13 @@ Does it look familar ? Yep! You guessed it, it's basically ``loop.run_until_comp
     Finished coroutine.
 
 Oh, we've just implemented a simple event loop!
+
+Wait... In reality, task could be suspended (not ready) due to I/O operations, and event loop should push it back to the queue. Let's consider,
+
+- ``Suspend`` the task when involves I/O, so it doesn't block the main thread.
+- ``Resume`` the task when stream I/O is ready (epoll, kqueue).
+
+As such, our async python process could fully utilize CPU.
 
 
 ------------
