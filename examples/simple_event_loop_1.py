@@ -52,12 +52,15 @@ class MyLoop:
     def run_until_complete(self, task):
     	tasks = [(task, None)]
         try:
-            while 1:
+            while tasks or self.selector.get_map():
+            	
                 task.send(None)
         except StopIteration:
             pass
 
 
+# Utilities control flow functions
+##################################
 @coroutine
 def spawn(task):
 	child = yield ('spawn', task)
@@ -69,6 +72,19 @@ def join(task):
 	yield ('join', task)
 
 
+async def gather(tasks):
+	children_tasks = []
+	for t in tasks:
+		child = await spawn(t)
+		children_tasks.append(t)
+
+	for t in children_tasks:
+		await join(t)
+
+
+# Async Read and Write:
+# Return control to main thread (parent task) after task being scheduled
+########################################################################
 @coroutine
 def read(stream):
 	yield (EVENT_READ, stream)
@@ -81,10 +97,23 @@ def write(stream, data):
 	return stream.write(data)
 
 
-def gather(tasks):
-	pass
+async def hello_world_read():
+	stream = MyStream("A", wait_cycles=2)
+	await read(stream)
 
 
+async def hello_world_write():
+	stream = MyStream("B", wait_cycles=1)
+	await write(stream, "Hello World!")
+
+
+# Main
+######
 async def hello_world():
-	read_stream = MyStream("A", wait_cycles=2)
-	write_stream = MyStream("B", wait_cycles=1)
+	await gather([
+		hello_world_read(), hello_world_write(),
+	])
+
+main = hello_world()
+my_loop = MyLoop()
+my_loop.run_until_complete(main)

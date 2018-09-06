@@ -244,3 +244,15 @@ Handling I/O
 ----------------
 sleep and timers
 ----------------
+
+
+----------
+References
+----------
+
+Here are some references that might help you understand more.
+
+-
+-
+-
+
