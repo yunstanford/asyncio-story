@@ -402,6 +402,13 @@ Apparently, task A doesn't block task B, and it finishes earlier than task B.
 sleep and timers
 ----------------
 
+`sleep/timer` is another interesting topic in `asyncio`, because we can not call `time.sleep` as it'll block the event loop from running tasks.
+
+
+WIP
+...
+...
+
 
 ------------
 Handling I/O
