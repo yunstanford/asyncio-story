@@ -1,2 +1,2 @@
-How do you customize ``asyncio.wait`` ?
+How can you customize ``asyncio.wait`` ?
 =======================================

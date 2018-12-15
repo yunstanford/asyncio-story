@@ -1,5 +1,5 @@
-How do you perform a CPU intensive operation ?
-==============================================
+How can you perform a CPU intensive operation in asyncio ?
+==========================================================
 
 The CPU-intensive working is blocking task from an event loop perspective, because the main loop will be blocked from dealing other tasks. Say, we have an event loop that is processing a cpu intensive task that doesn't involve any I/O, then we enqueue some I/O bound tasks. However, those enqueued I/O bound tasks will never been started/waited, until the cpu intensive task finished, because loop is ``blocked``. Let's take a look a small piece of code.
 
